@@ -10,6 +10,8 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
+const { readFile } = require('fs').promises
+
 const Root = () => ''
 
 try {
@@ -21,8 +23,10 @@ try {
   //   Root = (props) => <items.Root {...props} />
   //   console.log(JSON.stringify(items.Root))
   // })()
+  // eslint-disable-next-line no-console
   console.log(Root)
 } catch (ex) {
+  // eslint-disable-next-line no-console
   console.log(' run yarn build:prod to enable ssr')
 }
 
@@ -40,6 +44,19 @@ const middleware = [
 ]
 
 middleware.forEach((it) => server.use(it))
+
+const getJsonFilePath = () => `${__dirname}/goods/data.json`
+
+async function getDataFromFile() {
+  return readFile(getJsonFilePath(), { encoding: 'utf8' })
+    .then((text) => JSON.parse(text))
+    .catch((error) => ({ error }))
+}
+
+server.get('/api/v1/goods', async (req, res) => {
+  const goods = await getDataFromFile()
+  res.json(goods)
+})
 
 server.use('/api/', (req, res) => {
   res.status(404)
@@ -88,4 +105,5 @@ if (config.isSocketsEnabled) {
   })
   echo.installHandlers(app, { prefix: '/ws' })
 }
+// eslint-disable-next-line no-console
 console.log(`Serving at http://localhost:${port}`)
