@@ -12,7 +12,6 @@ import config from './config'
 import Html from '../client/html'
 
 const { readFile } = require('fs').promises
-const currenciesList = require('./currencies.js')
 
 const Root = () => ''
 
@@ -56,28 +55,9 @@ async function getDataFromFile() {
     .catch((error) => ({ error }))
 }
 
-function getFilteredCurrencies(result) {
-  const { rates } = result.data
-  return Object.entries(rates).reduce(
-    (acc, [k, v]) => (currenciesList.indexOf(k) > -1 ? { ...acc, [k]: v } : acc),
-    {}
-  )
-}
-
 server.get('/api/v1/goods', async (req, res) => {
   const goods = await getDataFromFile()
   res.json(goods)
-})
-
-server.get('/api/v1/currencies', async (req, res) => {
-  const result = await axios(getUrl())
-  res.json(getFilteredCurrencies(result))
-})
-
-server.get('/api/v1/currencies/:base', async (req, res) => {
-  const { base } = req.params
-  const result = await axios(getUrl(base))
-  res.json(getFilteredCurrencies(result))
 })
 
 server.get('/api/v1/currencies/usd/:target', async (req, res) => {
