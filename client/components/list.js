@@ -5,6 +5,7 @@ import { getGoodsData } from '../redux/reducers/goods'
 
 const List = () => {
   const list = useSelector((store) => store.goods.list)
+  const ratio = useSelector((store) => store.goods.ratio)
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -14,7 +15,7 @@ const List = () => {
     <div>
       <div className="card flex flex-wrap justify-around">
         {list.map((good) => (
-          <GoodCard key={good.id} good={good} />
+          <GoodCard key={good.id} good={good} ratio={ratio} />
         ))}
       </div>
     </div>

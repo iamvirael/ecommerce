@@ -5,12 +5,14 @@ import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
 import { renderToStaticNodeStream } from 'react-dom/server'
 import React from 'react'
+import axios from 'axios'
 
 import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
 const { readFile } = require('fs').promises
+const currenciesList = require('./currencies.js')
 
 const Root = () => ''
 
@@ -46,6 +48,7 @@ const middleware = [
 middleware.forEach((it) => server.use(it))
 
 const getJsonFilePath = () => `${__dirname}/goods/data.json`
+const getUrl = (base) => `https://api.exchangeratesapi.io/latest${base ? `?base=${base}` : ''}`
 
 async function getDataFromFile() {
   return readFile(getJsonFilePath(), { encoding: 'utf8' })
@@ -53,9 +56,35 @@ async function getDataFromFile() {
     .catch((error) => ({ error }))
 }
 
+function getFilteredCurrencies(result) {
+  const { rates } = result.data
+  return Object.entries(rates).reduce(
+    (acc, [k, v]) => (currenciesList.indexOf(k) > -1 ? { ...acc, [k]: v } : acc),
+    {}
+  )
+}
+
 server.get('/api/v1/goods', async (req, res) => {
   const goods = await getDataFromFile()
   res.json(goods)
+})
+
+server.get('/api/v1/currencies', async (req, res) => {
+  const result = await axios(getUrl())
+  res.json(getFilteredCurrencies(result))
+})
+
+server.get('/api/v1/currencies/:base', async (req, res) => {
+  const { base } = req.params
+  const result = await axios(getUrl(base))
+  res.json(getFilteredCurrencies(result))
+})
+
+server.get('/api/v1/currencies/usd/:target', async (req, res) => {
+  const { target } = req.params
+  const result = await axios(getUrl('USD'))
+  const { rates } = result.data
+  res.json(rates[target])
 })
 
 server.use('/api/', (req, res) => {
