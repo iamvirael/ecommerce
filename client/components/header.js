@@ -2,10 +2,21 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { setCurrency } from '../redux/reducers/goods'
+import { setCurrency } from '../redux/reducers/currencies'
 
 const Header = () => {
-  const currencies = useSelector((store) => store.goods.currencies)
+  const currencies = useSelector((store) => store.currencies.list)
+  const count = useSelector((store) =>
+    Object.keys(store.cart).reduce((acc, rec) => acc + store.cart[rec], 0)
+  )
+
+  const price = useSelector((store) =>
+    Object.keys(store.cart).reduce((acc, rec) => {
+      const goodPrice = store.goods.list.find((item) => item.id === rec).price
+      return acc + goodPrice * store.cart[rec]
+    }, 0)
+  )
+  const ratio = useSelector((store) => store.currencies.ratio)
 
   const dispatch = useDispatch()
 
@@ -17,6 +28,7 @@ const Header = () => {
   const onCurrencyChange = (target) => {
     dispatch(setCurrency(target))
   }
+
   return (
     <nav className="flex justify-between mb-4">
       <Link to="/" id="brand-name">
@@ -36,7 +48,8 @@ const Header = () => {
         ))}
       </ul>
       <Link to="/basket" id="order-count">
-        <i className="fa fa-cart-plus" aria-hidden="true" />
+        <i className="fa fa-cart-plus" aria-hidden="true" /> {count} Total:{' '}
+        {(price * ratio).toFixed(2)}
       </Link>
     </nav>
   )
