@@ -18,6 +18,10 @@ const Header = () => {
   )
   const ratio = useSelector((store) => store.currencies.ratio)
 
+  const activeCurrency = useSelector(
+    (store) => store.currencies.list.find((it) => it.isActive).name
+  )
+
   const dispatch = useDispatch()
 
   const activeButtonClasses =
@@ -49,7 +53,7 @@ const Header = () => {
       </ul>
       <Link to="/basket" id="order-count">
         <i className="fa fa-cart-plus" aria-hidden="true" /> {count} Total:{' '}
-        {(price * ratio).toFixed(2)}
+        {(price * ratio).toFixed(2)} {activeCurrency}
       </Link>
     </nav>
   )

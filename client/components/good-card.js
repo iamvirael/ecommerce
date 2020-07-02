@@ -47,7 +47,7 @@ const GoodCart = (props) => {
               <i className="fas fa-plus-circle" />
             </button>
             <span className="inline-block bg-gray-200 rounded-full px-1 py-1 font-semibold mr-2 text-black text-xl">
-              <i id="brand-name" className="fas fa-shopping-cart px-1" />
+              <i className="fas fa-shopping-cart px-1" />
             </span>
             <button
               type="button"
@@ -58,7 +58,7 @@ const GoodCart = (props) => {
               <i className="fas fa-minus-circle" />
             </button>
             {count > 0 && (
-              <div className="py-2">
+              <div>
                 <span className="card__product-amount inline-block bg-gray-200 rounded-full px-1 py-1 text-sm font-semibold text-gray-700 mr-2">
                   {count}
                 </span>

@@ -20,10 +20,10 @@ const CartItem = (props) => {
   }
 
   return (
-    <tr className="hover:bg-grey-lighter">
-      <td className="w-2/3">{title}</td>
+    <tr className="hover:bg-grey-lighter w-full">
+      <td className="w-2/3 border-b border-grey-light">{title}</td>
       <td className="w-1/12 py-1 px-1 border-b border-grey-light">{count}</td>
-      <td className="w-1/12">
+      <td className="w-1/12 border-b border-grey-light">
         <button
           type="button"
           className="inline-block px-1 py-1 font-semibold mr-2 text-black text-xl"
@@ -35,7 +35,7 @@ const CartItem = (props) => {
       <td className="w-1/6 py-1 px-1 border-b border-grey-light">
         {(price * ratio * count).toFixed(2)} {activeCurrency}
       </td>
-      <td className="w-1/12">
+      <td className="w-1/12 border-b border-grey-light">
         <button
           type="button"
           className="inline-block px-1 py-1 font-semibold text-black text-xl"
